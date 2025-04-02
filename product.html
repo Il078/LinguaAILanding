@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LinguaLink AI - Product</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">Lingua AI</a>
+
+            <div class="hamburger" id="hamburger">☰</div>
+
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="product.html">Product</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="hero-header">
+        <h1>Lingua AI: How It Works</h1>
+        <p>Real-time multilingual interpretation powered by AI</p>
+    </header>
+
+    <!-- Overview -->
+    <section class="container centered-text">
+        <h2>Seamless Communication Without Language Barriers</h2>
+        <p>
+            Lingua AI transcribes speech, translates it instantly, and returns spoken output in the listener’s
+            language. Built for high-stakes conversations in healthcare, legal, and enterprise settings.
+        </p>
+    </section>
+
+    <!-- Steps -->
+    <section class="container features">
+        <div class="feature">
+            <h3>1. Speech Recognition</h3>
+            <p>Caller speech is transcribed using advanced voice recognition.</p>
+        </div>
+        <div class="feature">
+            <h3>2. AI Translation</h3>
+            <p>Text is translated in real-time into the listener’s language.</p>
+        </div>
+        <div class="feature">
+            <h3>3. Voice Output</h3>
+            <p>The translated message is played aloud in a natural voice.</p>
+        </div>
+    </section>
+
+    <!-- Use Cases -->
+    <section class="container">
+        <h2 class="centered-text">Use Cases</h2>
+        <div class="features">
+            <div class="feature">
+                <h4>Healthcare</h4>
+                <p>Improve patient care and emergency communication instantly.</p>
+            </div>
+            <div class="feature">
+                <h4>Call Centers</h4>
+                <p>Serve global customers without hiring multilingual staff.</p>
+            </div>
+            <div class="feature">
+                <h4>Legal Services</h4>
+                <p>Enable clear client communication in law and compliance.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="signup" style="text-align: center;">
+        <h2>See It in Action</h2>
+        <p style="margin-bottom: 24px;">
+            Lingua AI changes how your team communicates.
+        </p>
+        <div>
+            <a href="index.html" class="btn">← Back to Home</a>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 LinguaLink AI. All rights reserved.</p>
+    </footer>
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('nav-links');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
+
+</body>
+
+</html>

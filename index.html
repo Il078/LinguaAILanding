@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LinguaLink AI</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">Lingua AI</a>
+
+      <div class="hamburger" id="hamburger">☰</div>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="product.html">Product</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <a href="login.html" class="btn">Log In</a>
+        <a href="signup.html" class="btn">Sign Up</a>
+        <!-- <a href="dashboard.html" class="btn">Dashboard</a> -->
+
+      </ul>
+    </div>
+  </nav>
+
+
+  <!-- Hero Section -->
+  <section id="hero" class="animate fade-in">
+    <div class="hero-content">
+      <h1>AI-Powered Over-the-Phone Interpreting (OPI)</h1>
+      <p>Real-Time Speech Translation for Call Centers</p>
+      <a href="#signup" class="btn">Get Early Access</a>
+      <a href="product.html" class="btn">How It Works</a>
+      <a href="pricing.html" class="btn">View Pricing</a>
+      <a href="contact.html" class="btn">Contact Us</a>
+
+
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section id="how-it-works" class="animate slide-up">
+    <h2>How It Works</h2>
+    <div class="features">
+      <div class="feature">
+        <h3>1. Speech-to-Text</h3>
+        <p>Convert real-time speech into text with 90%+ accuracy.</p>
+      </div>
+      <div class="feature">
+        <h3>2. AI Translation</h3>
+        <p>Translate conversations in real-time with AI models.</p>
+      </div>
+      <div class="feature">
+        <h3>3. Text-to-Speech</h3>
+        <p>Instantly convert translated text back into speech.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits Section -->
+  <section id="benefits" class="animate slide-left">
+    <h2>Why Choose LinguaAI?</h2>
+    <ul>
+      <li>✅ 24/7 AI-Powered Interpretation</li>
+      <li>✅ Cost-Effective & Scalable</li>
+      <li>✅ Perfect for Healthcare, Legal, and Customer Service</li>
+    </ul>
+  </section>
+
+  <!-- Signup Section -->
+  <section id="signup" class="animate zoom-in">
+    <h2>Get Early Access</h2>
+    <form id="signup-form">
+      <input type="email" name="email" placeholder="Enter your email" autocomplete="email" required />
+      <button type="submit">Join Now</button>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 LinguaAI. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+    });
+  </script>
+
+</body>
+
+</html>

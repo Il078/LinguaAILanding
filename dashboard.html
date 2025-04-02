@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard – LinguaLink AI</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">LinguaLink AI</a>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="settings.html">Settings</a></li>
+                <li><button id="logout-btn" class="btn btn-secondary">Log Out</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="dashboard">
+        <div class="dashboard-header">
+            <h2 id="welcome-msg">Welcome, User 👋</h2>
+            <p>Your real-time interpreting stats at a glance</p>
+            <p id="preferred-lang" style="margin-top: 5px; color: #555;"></p>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <h3>Calls This Month</h3>
+                <p class="stat" id="calls">--</p>
+            </div>
+            <div class="dashboard-card">
+                <h3>Minutes Used</h3>
+                <p class="stat" id="minutes">--</p>
+            </div>
+            <div class="dashboard-card">
+                <h3>Languages Interpreted</h3>
+                <p class="stat" id="languages">--</p>
+            </div>
+            <div class="dashboard-card">
+                <h3>Next Billing Date</h3>
+                <p class="stat" id="billing">--</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="call-action">
+        <div class="call-btn-wrapper" style="text-align: center;">
+            <button id="start-call-btn" class="btn call-btn">Start Call</button>
+            <p id="call-feedback" class="feedback-message"></p>
+            <div class="speech-section" style="margin-top: 40px;">
+                <h3>🎤 Speak & Transcribe</h3>
+                <button id="start-transcription-btn" class="btn" style="margin-bottom: 10px;">🎙️ Start
+                    Listening</button>
+                <p id="transcription-output" style="margin-top: 10px; font-size: 1.1rem; color: #333;">Waiting for
+                    input...</p>
+                <button id="replay-btn" class="btn" style="margin-top: 10px;">🔁 Replay</button>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="call-logs">
+        <div class="call-logs-wrapper">
+            <h3>Recent Call Logs</h3>
+            <table class="logs-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Language</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody id="call-logs-body">
+                    <tr>
+                        <td colspan="3">Loading...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 LinguaLink AI. All rights reserved.</p>
+    </footer>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBwxLImIrZf8ZHyu97iS93rzFCuqTMpcpQ",
+            authDomain: "linguaai-1e34c.firebaseapp.com",
+            projectId: "linguaai-1e34c",
+            storageBucket: "linguaai-1e34c.appspot.com",
+            messagingSenderId: "1092594709391",
+            appId: "1:1092594709391:web:7a6bb8d1d5ccf0659711fa"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        const startBtn = document.getElementById('start-transcription-btn');
+        const output = document.getElementById('transcription-output');
+
+        const languageMap = {
+            "Arabic": "ar",
+            "Spanish": "es",
+            "French": "fr",
+            "Mandarin": "zh",
+            "Russian": "ru",
+            "English": "en"
+        };
+
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) return window.location.href = "login.html";
+
+            const name = user.displayName || user.email;
+            document.getElementById('welcome-msg').textContent = `Welcome, ${name} 👋`;
+
+            const userRef = db.collection('users').doc(user.uid);
+            const langDisplay = document.getElementById('preferred-lang');
+            const startCallBtn = document.getElementById('start-call-btn');
+            const feedback = document.getElementById('call-feedback');
+            const logsBody = document.getElementById('call-logs-body');
+
+            const doc = await userRef.get();
+            const userLang = doc.exists && doc.data().preferredLanguage ? doc.data().preferredLanguage : 'Spanish';
+            const targetLang = languageMap[userLang] || 'es';
+
+            langDisplay.textContent = `🌐 Preferred Language: ${userLang}`;
+
+            if (doc.exists) {
+                const data = doc.data();
+                document.getElementById('calls').textContent = data.calls;
+                document.getElementById('minutes').textContent = `${data.minutes} min`;
+                document.getElementById('languages').textContent = data.languages;
+                document.getElementById('billing').textContent = data.billingDate;
+            }
+
+            userRef.collection('callLogs')
+                .orderBy('timestamp', 'desc')
+                .limit(10)
+                .get()
+                .then(snapshot => {
+                    logsBody.innerHTML = '';
+                    if (snapshot.empty) {
+                        logsBody.innerHTML = '<tr><td colspan="3">No calls yet.</td></tr>';
+                        return;
+                    }
+
+                    snapshot.forEach(doc => {
+                        const { timestamp, language, minutes } = doc.data();
+                        const date = new Date(timestamp).toLocaleString();
+                        logsBody.innerHTML += `<tr><td>${date}</td><td>${language}</td><td>${minutes} min</td></tr>`;
+                    });
+                });
+
+            startCallBtn.addEventListener('click', async () => {
+                const callMinutes = Math.floor(Math.random() * 10) + 1;
+                const languages = ['Spanish', 'French', 'Arabic', 'Mandarin', 'Russian'];
+                const languageUsed = languages[Math.floor(Math.random() * languages.length)];
+
+                try {
+                    await userRef.update({
+                        calls: firebase.firestore.FieldValue.increment(1),
+                        minutes: firebase.firestore.FieldValue.increment(callMinutes)
+                    });
+
+                    await userRef.collection('callLogs').add({
+                        timestamp: Date.now(),
+                        minutes: callMinutes,
+                        language: languageUsed
+                    });
+
+                    feedback.textContent = `Call ended. +${callMinutes} min in ${languageUsed}.`;
+                    feedback.style.color = 'green';
+                    setTimeout(() => window.location.reload(), 1000);
+                } catch (err) {
+                    feedback.textContent = 'Error starting call.';
+                    feedback.style.color = 'red';
+                }
+            });
+
+            // 🎤 Speech Recognition
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'en-US';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+
+                recognition.onstart = () => {
+                    output.textContent = '🎙️ Listening...';
+                    startBtn.disabled = true;
+                };
+
+                let lastTranslated = ""; // Store latest translation
+
+                recognition.onresult = async (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    output.textContent = `🗣️ You said: "${transcript}"\nTranslating...`;
+
+                    try {
+                        const res = await fetch('http://localhost:3001/translate', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ q: transcript, target: targetLang })
+                        });
+
+                        const data = await res.json();
+
+                        if (!res.ok || !data?.data?.translations?.[0]?.translatedText) {
+                            throw new Error(data.error?.message || "Invalid response from translation API.");
+                        }
+
+                        const translated = data.data.translations[0].translatedText;
+                        lastTranslated = translated; // Save it for replay
+                        output.textContent = `🗣️ You said: "${transcript}"\n🌐 Translated: "${translated}"`;
+
+                        // Text-to-speech playback
+                        const utterance = new SpeechSynthesisUtterance(translated);
+                        utterance.lang = targetLang;
+                        speechSynthesis.speak(utterance);
+                    } catch (err) {
+                        output.textContent = `❌ Translation error: ${err.message}`;
+                        console.error('❌ Error:', err);
+                    }
+
+                    startBtn.disabled = false;
+                };
+
+
+
+                recognition.onerror = (event) => {
+                    output.textContent = `Error: ${event.error}`;
+                    startBtn.disabled = false;
+                };
+
+                recognition.onend = () => {
+                    output.textContent += '\n🎧 Stopped listening.';
+                    startBtn.disabled = false;
+                };
+
+                startBtn.addEventListener('click', () => recognition.start());
+            } else {
+                output.textContent = '❌ Speech Recognition not supported in this browser.';
+                startBtn.disabled = true;
+            }
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await auth.signOut();
+            window.location.href = 'login.html';
+        });
+        document.getElementById('replay-btn').addEventListener('click', () => {
+            if (lastTranslated) {
+                const replayUtterance = new SpeechSynthesisUtterance(lastTranslated);
+                replayUtterance.lang = targetLang;
+                speechSynthesis.speak(replayUtterance);
+            }
+        });
+
+    </script>
+</body>
+
+</html>

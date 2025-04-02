@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Test Translate</title>
+</head>
+
+<body>
+    <button onclick="translate()">Translate "Hello"</button>
+    <p id="result"></p>
+
+    <script>
+        window.translate = async function () {
+            const res = await fetch('https://translation.googleapis.com/language/translate/v2', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    q: "Hello",
+                    target: "es",
+                    format: "text",
+                    key: "AIzaSyAt-4Ohija4uGE38MiFEuBBsrkFKTIxJg8"
+                })
+            });
+
+            const data = await res.json();
+            document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+
+</html>

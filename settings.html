@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Settings – LinguaLink AI</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">LinguaLink AI</a>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="settings.html">Settings</a></li>
+                <li><button id="logout-btn" class="btn btn-secondary">Log Out</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="auth-section">
+        <div class="auth-card">
+            <h2>User Settings</h2>
+            <form id="settings-form">
+                <input type="text" id="name" placeholder="Full Name" required />
+                <select id="language" required>
+                    <option value="" disabled selected>Select Preferred Language</option>
+                    <option value="English">English</option>
+                    <option value="Spanish">Spanish</option>
+                    <option value="French">French</option>
+                    <option value="Arabic">Arabic</option>
+                    <option value="Mandarin">Mandarin</option>
+                    <option value="Russian">Russian</option>
+                </select>
+                <button type="submit" class="btn">Save Changes</button>
+                <p id="settings-message" style="margin-top: 10px;"></p>
+            </form>
+        </div>
+    </section>
+
+    <!-- Initialize Firebase -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBwxLImIrZf8ZHyu97iS93rzFCuqTMpcpQ",
+            authDomain: "linguaai-1e34c.firebaseapp.com",
+            projectId: "linguaai-1e34c",
+            storageBucket: "linguaai-1e34c.appspot.com",
+            messagingSenderId: "1092594709391",
+            appId: "1:1092594709391:web:7a6bb8d1d5ccf0659711fa"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+    </script>
+
+    <!-- Logic to load/update user settings -->
+    <script>
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) return window.location.href = "login.html";
+
+            const nameInput = document.getElementById('name');
+            const langSelect = document.getElementById('language');
+            const message = document.getElementById('settings-message');
+            const form = document.getElementById('settings-form');
+            const userRef = db.collection('users').doc(user.uid);
+
+            // ✅ Pre-fill data
+            nameInput.value = user.displayName || '';
+
+            const userDoc = await userRef.get();
+            if (userDoc.exists && userDoc.data().preferredLanguage) {
+                langSelect.value = userDoc.data().preferredLanguage;
+            }
+
+            // ✅ Handle form submission
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const newName = nameInput.value.trim();
+                const preferredLanguage = langSelect.value;
+
+                try {
+                    await user.updateProfile({ displayName: newName });
+                    await userRef.set({ preferredLanguage }, { merge: true });
+
+                    message.textContent = '✅ Settings updated successfully!';
+                    message.style.color = 'green';
+                } catch (error) {
+                    console.error(error);
+                    message.textContent = '❌ Failed to update settings.';
+                    message.style.color = 'red';
+                }
+            });
+        });
+
+        // 🔐 Log out
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await auth.signOut();
+            window.location.href = "login.html";
+        });
+    </script>
+</body>
+
+</html>

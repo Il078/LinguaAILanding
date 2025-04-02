@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pricing – LinguaLink AI</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">Lingua AI</a>
+
+            <div class="hamburger" id="hamburger">☰</div>
+
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="product.html">Product</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <!-- Header -->
+    <header class="hero-header">
+        <h1>Choose Your Plan</h1>
+        <p>Simple pricing for every business size</p>
+    </header>
+
+    <!-- Pricing Cards -->
+    <section class="container features" style="margin-top: 60px;">
+        <div class="feature" style="border: 2px solid #ccc;">
+            <h3>Free Trial</h3>
+            <p><strong>$0/mo</strong></p>
+            <ul>
+                <li>✔ 30 mins/month</li>
+                <li>✔ 2 languages</li>
+                <li>✔ Email support</li>
+            </ul>
+            <div style="margin-top: 20px;">
+                <a href="#signup" class="btn">Start Free</a>
+            </div>
+        </div>
+
+        <div class="feature" style="border: 3px solid #4CAF50;">
+            <h3>Pro</h3>
+            <p><strong>$49/mo</strong></p>
+            <ul>
+                <li>✔ Unlimited usage</li>
+                <li>✔ 50+ languages</li>
+                <li>✔ Priority support</li>
+            </ul>
+            <div style="margin-top: 20px;">
+                <a href="#signup" class="btn">Upgrade Now</a>
+            </div>
+
+        </div>
+
+        <div class="feature" style="border: 2px solid #ccc;">
+            <h3>Enterprise</h3>
+            <p><strong>Custom</strong></p>
+            <ul>
+                <li>✔ Dedicated interpreter engine</li>
+                <li>✔ SLA & custom onboarding</li>
+                <li>✔ Volume discounts</li>
+            </ul>
+            <div style="margin-top: 20px;">
+                <a href="mailto:sales@lingualink.ai" class="btn">Contact Sales</a>
+            </div>
+            <!-- <a href="index.html" class="btn">← Back to Home</a> -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <section class="signup" style="text-align: center; padding: 60px 20px;">
+            <a href="index.html" class="btn" style="margin-top: 10px;">← Back to Home</a>
+        </section>
+        <p>© 2025 LinguaLink AI. All rights reserved.</p>
+    </footer>
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('nav-links');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
+
+</body>
+
+</html>
